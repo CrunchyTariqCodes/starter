@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import Dashboard from "../dashboard/Dashboard";
-import NotFound from "./NotFound";
-import NewReservations from "../reservations/NewReservations";
-import SeatReservation from "../reservations/SeatReservation";
-import EditReservations from "../reservations/EditReservations";
-import TablesForm from "../tables/TablesForm";
-import SearchByMobile from "../search/SearchByMobile";
-import { listTables, listReservations } from "../utils/api";
 import { today } from "../utils/date-time";
-import useQuery from "../utils/useQuery";
+import useQuery from '../utils/useQuery';
+import Dashboard from "../dashboard/Dashboard";
+import NewReservation from "../reservations/NewReservation";
+import NotFound from "./NotFound";
+import NewTable from "../tables/NewTable";
+import SeatForm from "../tables/SeatForm";
+import SearchPage from "../search/SearchByMobile";
+import EditReservation from "../reservations/EditReservation";
+
 
 /**
  * Defines all the routes for the application.
@@ -18,59 +18,32 @@ import useQuery from "../utils/useQuery";
  *
  * @returns {JSX.Element}
  */
-function Routes() {
+ export default function Routes() {
   const query = useQuery();
-  const date = query.get("date") || today();
-
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
-  const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
-
-  useEffect(loadDashboard, [date]);
-
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    setTablesError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    listTables(abortController.signal).then(setTables).catch(setTablesError);
-    return () => abortController.abort();
-  }
+  const date = query.get('date');
 
   return (
     <Switch>
       <Route exact={true} path="/">
         <Redirect to={"/dashboard"} />
       </Route>
-      <Route exact={true} path="/reservations">
-        <Redirect to={"/dashboard"} />
-      </Route>
       <Route path="/dashboard">
-        <Dashboard
-          date={date}
-          reservations={reservations}
-          reservationsError={reservationsError}
-          tables={tables}
-          tablesError={tablesError}
-        />
-      </Route>
-      <Route path="/search">
-        <SearchByMobile />
-      </Route>
-      <Route path="/reservations/new">
-        <NewReservations />
-      </Route>
-      <Route path="/reservations/:reservation_id/seat">
-        <SeatReservation tables={tables} />
-      </Route>
-      <Route path="/reservations/:reservation_id/edit">
-        <EditReservations />
+        <Dashboard date={date || today()} />
       </Route>
       <Route path="/tables/new">
-        <TablesForm setTables={setTables} />
+        <NewTable />
+      </Route>
+      <Route path="/reservations/new">
+        <NewReservation />
+      </Route>
+      <Route path='/reservations/:reservation_id/seat'>
+        <SeatForm />
+      </Route>
+      <Route path='/reservations/:reservation_id/edit'>
+        <EditReservation />
+      </Route>
+      <Route path='/search'>
+        <SearchPage />
       </Route>
       <Route>
         <NotFound />
@@ -78,5 +51,3 @@ function Routes() {
     </Switch>
   );
 }
-
-export default Routes;

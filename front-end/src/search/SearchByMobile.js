@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ReservationDisplay from "../reservations/ReservationDisplay";
+import ReservationList from "../reservations/ReservationList";
 import { listReservations } from "../utils/api";
+
 
 export default function SearchByMobile() {
   const [mobile_number, setMobile_number] = useState(null);
@@ -55,7 +56,7 @@ export default function SearchByMobile() {
       </form>
       {displayResults ? (
         results.length ? (
-          <ReservationDisplay
+          <ReservationList
             reservations={results}
             reservationsError={reservationsError}
           />

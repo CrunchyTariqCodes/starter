@@ -79,12 +79,14 @@
    return await fetchJson(url, options, reservation);
  }
  
- export async function readReservation(reservation_id, signal) {
+ /* export async function readReservation(reservation_id, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
    return await fetchJson(url, { headers, signal }, {})
      .then(formatReservationDate)
      .then(formatReservationTime);
  }
+ */
+
  // export async function updateReservation(reservation, signal) {
  //   const { reservation_date, reservation_time, reservation_id } = reservation;
  //   const url = `${API_BASE_URL}/reservations/${reservation_id}`;
@@ -109,24 +111,20 @@
  
  //   return Array.isArray(response) ? response[0] : response;
  // }
- export async function updateReservation(updatedReservation, signal) {
+ export async function updateReservation(reservation_id, reservation, signal) {
    const url = new URL(
-     `${API_BASE_URL}/reservations/${updatedReservation.reservation_id}`
+     `${API_BASE_URL}/reservations/${reservation_id}`
    );
    const options = {
      method: "PUT",
      headers,
-     body: JSON.stringify({ data: updatedReservation }),
+     body: JSON.stringify({ data: reservation }),
      signal,
    };
-   return await fetchJson(url, options, updatedReservation);
+   return await fetchJson(url, options, reservation);
  }
  
- export async function changeReservationStatus(
-   reservation_id,
-   newStatus,
-   signal
- ) {
+ export async function changeReservationStatus(reservation_id, newStatus, signal) {
    const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);
    const options = {
      method: "PUT",

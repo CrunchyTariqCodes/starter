@@ -1,49 +1,68 @@
-const { select } = require("../db/connection");
 const knex = require("../db/connection");
 
-function list() {
+/**
+ *  Creates a new reservation
+ * @param {newReservation} 
+ *  the new reservation data
+ * @returns {Promise<Error/any>}}
+ *  a promise that resolve to the `json` data or an error
+ */
+function create(newReservation) {
   return knex("reservations")
-    .select("*")
-    .whereNotIn("status", ["finished", "cancelled"])
-    .orderBy("reservations.reservation_date");
+    .insert(newReservation, '*')
+    .then(data => data[0]);
 }
 
-function create(reservation) {
-  return knex("reservations as r")
-    .insert(reservation)
-    .returning("*")
-    .then((newReservation) => newReservation[0]);
-}
-
-function listByDate(reservation_date) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_date })
-    .whereNotIn("status", ["finished", "cancelled"])
-    .orderBy("reservations.reservation_time");
-}
-
+/**
+ *  Finds a specific reservation
+ * @param {reservation_id} 
+ *  the reservation id number
+ * @returns {Promise<Error/any>}}
+ *  a promise that resolve to the `json` data or an error
+ */
 function read(reservation_id) {
-  return knex("reservations").select("*").where({ reservation_id }).first();
+  return knex('reservations')
+      .where({'reservation_id': reservation_id})
+      .first();
 }
 
-//only updates status
-function update(reservation_id, status) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_id })
-    .update({ status })
-    .returning("*")
-    .then((updated) => updated[0]);
+/**
+ *  Lists all reservations by a specific date
+ * @param {date} 
+ *  the current date
+ * @returns {Promise<Error/any>}}
+ *  a promise that resolve to the `json` data or an error
+ */
+function list(date){
+  if (date) {
+    return knex('reservations')
+      .where('reservation_date', date)
+      .orderBy('reservation_time');
+  }
+  return knex('reservations');
 }
 
-function finish(reservation_id) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_id })
-    .update({ status: "finished" });
+/**
+ *  Updates a specific reservation
+ * @param {reservation} 
+ *  the reservation object
+ * @returns {Promise<Error/any>}}
+ *  a promise that resolve to the `json` data or an error
+ */
+ function update(reservation) {
+  return knex('reservations')
+      .where({ 'reservation_id': reservation.reservation_id })
+      .update(reservation, '*')
+      .then(data => data[0]);
 }
 
+/**
+ *  List all reservations by a specific phone number
+ * @param {mobile_number}
+ *  the mobile number being searched 
+ * @returns 
+ *  a promise that resolves to the `json` data or an error
+ */
 function search(mobile_number) {
   return knex("reservations")
     .whereRaw(
@@ -53,23 +72,28 @@ function search(mobile_number) {
     .orderBy("reservation_date");
 }
 
-//updates when reservation is modified by user
-function modify(reservation_id, reservation) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_id })
-    .update(reservation, "*")
-    .returning("*")
-    .then((updated) => updated[0]);
+/**
+ *  Updates a specific reservation, status only
+ * @param {reservation_id} 
+ *  the reservations id number
+ * @param {status} 
+ *  the new status
+ * @returns {Promise<Error/any>}}
+ *  a promise that resolve to the `json` data or an error
+ */
+ function status(reservation_id, status) {
+  return knex('reservations')
+      .where({ 'reservation_id': reservation_id })
+      .update({ 'status': status })
+      .returning('*')
+      .then(data => data[0]);
 }
 
 module.exports = {
-  list,
   create,
-  listByDate,
   read,
-  finish,
   update,
+  list,
   search,
-  modify,
+  status,
 };

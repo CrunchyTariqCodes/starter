@@ -1,167 +1,101 @@
-import React, { useState } from "react";
-import Validate from "./Validate";
-import ValidationErrors from "./ValidationErrors";
+import { useHistory } from "react-router";
+import ErrorAlert from "../layout/ErrorAlert";
 
-export default function ReservationForm({
-  submitHandler,
-  cancelHandler,
-  initialState = {
-    first_name: "",
-    last_name: "",
-    mobile_number: "",
-    reservation_date: "",
-    reservation_time: "",
-    people: "",
-  },
-}) {
-  const [reservation, setReservation] = useState(initialState);
-  const [errors, setErrors] = useState([]);
-
-  function changeHandler({ target: { name, value } }) {
-    setReservation((previousReservation) => ({
-      ...previousReservation,
-      [name]: value,
-    }));
-  }
-
-  function numberChangeHandler({ target: { name, value } }) {
-    setReservation((previousReservation) => ({
-      ...previousReservation,
-      [name]: Number(value),
-    }));
-  }
-
-  function onSubmit(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const validationErrors = Validate(reservation);
-
-    if (validationErrors.length) {
-      return setErrors(validationErrors);
+/**
+ * A basic form layout for a reservation
+ * @returns {JSX.Element}
+ *  a form prefilled with info or not
+ */
+export default function ReservationForm({ formData, setFormData, error, submitHandler}) {
+    const history = useHistory();
+    // change handler for keeping the current text on screen
+    const changeHandler = ({ target: { name, value } }) => {
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    }
+    // when canceled go back to the users previous page
+    const cancelHandler = () => {
+        history.goBack();
     }
 
-    submitHandler(reservation);
-  }
-
-  return (
-    <form onSubmit={onSubmit}>
-      <ValidationErrors errors={errors} />
-      <fieldset>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="first_name">
-              First Name:
-            </label>
-            <input
-              className="form-control"
-              id="first_name"
-              name="first_name"
-              type="text"
-              value={reservation.first_name}
-              onChange={changeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="last_name">
-              Last Name:
-            </label>
-            <input
-              className="form-control"
-              id="last_name"
-              name="last_name"
-              type="text"
-              value={reservation.last_name}
-              onChange={changeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="mobile_number">
-              Mobile Number:
-            </label>
-            <input
-              className="form-control"
-              id="mobile_number"
-              name="mobile_number"
-              type="tel"
-              placeholder="XXX-XXX-XXXX"
-              //pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-              value={reservation.mobile_number}
-              onChange={changeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="reservation_date">
-              Reservation Date:
-            </label>
-            <input
-              className="form-control"
-              id="reservation_date"
-              name="reservation_date"
-              type="date"
-              placeholder="YYYY-MM-DD"
-              pattern="\d{4}-\d{2}-\d{2}"
-              value={reservation.reservation_date}
-              onChange={changeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="reservation_time">
-              Reservation Time:
-            </label>
-            <input
-              className="form-control"
-              id="reservation_time"
-              name="reservation_time"
-              type="time"
-              placeholder="HH:MM"
-              pattern="[0-9]{2}:[0-9]{2}"
-              value={reservation.reservation_time}
-              onChange={changeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-6 form-group">
-            <label className="form-label" htmlFor="people">
-              People:
-            </label>
-            <input
-              className="form-control"
-              id="people"
-              name="people"
-              type="number"
-              max="12"
-              min="1"
-              aria-label="Number of people"
-              value={reservation.people}
-              onChange={numberChangeHandler}
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <button className="btn btn-secondary mx-1" onClick={cancelHandler}>
-            <span className="oi oi-x" /> Cancel
-          </button>
-          <button className="btn btn-primary mx-1" type="submit">
-            <span className="oi oi-check" /> Submit
-          </button>
-        </div>
-      </fieldset>
-    </form>
-  );
+    return (
+        <main>
+            <h1>Create a new reservation</h1>
+            <ErrorAlert error={error} />
+            <div className="d-md-flex mb-3">
+                <div className=''>
+                    <form onSubmit={submitHandler}>
+                        <label className='form-label mt-2'>First name:</label>
+                        <input
+                            id='first_name' 
+                            name="first_name"
+                            required
+                            value={formData.first_name}
+                            onChange={changeHandler}
+                            className='form-control'
+                        /> 
+                        <label className='form-label mt-2'>Last name:</label>
+                        <input
+                            id='last_name' 
+                            name="last_name"
+                            required
+                            value={formData.last_name}
+                            onChange={changeHandler}
+                            className='form-control'
+                        />
+                        <label className='form-label mt-2'>Mobile number: </label>
+                        <input
+                            type='tel' 
+                            name="mobile_number"
+                            placeholder='000-000-0000'
+                            minLength='7'
+                            maxLength='12'
+                            required
+                            value={formData.mobile_number}
+                            onChange={changeHandler}
+                            className='form-control'
+                        />
+                        <label className='form-label mt-2'>Reservation date: </label>
+                        <input 
+                            type='date'
+                            name="reservation_date"
+                            required
+                            value={formData.reservation_date} 
+                            onChange={changeHandler}
+                            className='form-control'
+                        />
+                        <label className='form-label mt-2'>Reservation time:</label>
+                        <input 
+                            type='time'
+                            name="reservation_time"
+                            required
+                            value={formData.reservation_time}
+                            onChange={changeHandler}
+                            className='form-control'
+                        />
+                        <label className='form-label mt-2'>Amount of people:</label>
+                        <input 
+                            id='people'
+                            name="people"
+                            type='number'
+                            value={formData.people}
+                            onChange={changeHandler} 
+                            className='form-control'
+                        />
+                        <button
+                            type="submit"
+                            className="btn btn-primary mt-4"
+                        >Submit</button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary mt-4 ml-2"
+                            onClick={cancelHandler}
+                        >Cancel</button>
+                    </form>
+                </div>
+            </div>  
+        </main>
+    );
 }

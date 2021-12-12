@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { today } from "../utils/date-time";
 import useQuery from '../utils/useQuery';

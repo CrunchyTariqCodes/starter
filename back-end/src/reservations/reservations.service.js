@@ -6,20 +6,17 @@ function create(newReservation) {
     .then(data => data[0]);
 }
 
-function read(reservation_id) {
-  return knex('reservations')
-      .where({'reservation_id': reservation_id})
-      .first();
-}
+const read = (reservationId) => {
+  return knex('reservations').where({ reservation_id: reservationId }).first();
+};
 
-function list(date){
-  if (date) {
-    return knex('reservations')
-      .where('reservation_date', date)
-      .orderBy('reservation_time');
-  }
-  return knex('reservations');
-}
+const list = (date) => {
+  return knex('reservations')
+    .where({ reservation_date: date })
+    .where('status', 'booked')
+    .orWhere('status', 'seated')
+    .orderBy('reservation_time');
+};
 
  function update(reservation) {
   return knex('reservations')
@@ -28,14 +25,14 @@ function list(date){
       .then(data => data[0]);
 }
 
-function search(mobile_number) {
-  return knex("reservations")
+const search = (mobile_number) => {
+  return knex('reservations')
     .whereRaw(
       "translate(mobile_number, '() -', '') like ?",
-      `%${mobile_number.replace(/\D/g, "")}%`
+      `%${mobile_number.replace(/\D/g, '')}%`
     )
-    .orderBy("reservation_date");
-}
+    .orderBy('reservation_date');
+};
 
  function status(reservation_id, status) {
   return knex('reservations')

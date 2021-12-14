@@ -72,7 +72,7 @@ export default function SeatForm() {
                 <div className='tablesNew_formBtns'>
                 <button
                     type="submit"
-                    className="btn btn-primary mr-2"
+                    className="btn btn-info mr-2"
                 >Submit</button>
                 <button
                     type="button"

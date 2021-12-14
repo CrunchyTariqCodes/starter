@@ -7,11 +7,9 @@ function create(newTable) {
         .then(data => data[0]);
 }
 
-function read(table_id) {
-    return knex('tables')
-        .where({'table_id': table_id})
-        .first();
-}
+const read = (table_id) => {
+    return knex('tables').where({ table_id }).first();
+  };
 
 function update(table_id, reservation_id) {
     return knex('tables')
@@ -26,11 +24,9 @@ function destroy(table_id){
         .where({ 'table_id': table_id })
         .update({ 'reservation_id': null });
 }
-
-function list(){
-    return knex('tables')
-        .orderBy('table_name');
-}
+const list = () => {
+    return knex('tables').orderBy('table_name');
+  };
 
 module.exports = {
     create,

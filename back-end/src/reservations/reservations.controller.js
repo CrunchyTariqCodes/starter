@@ -21,6 +21,7 @@ async function reservationExists(req, res, next) {
   next({ status: 404, message: `Reservation ${reservation_id} not found.` });
 }
 
+
  function reservationFinished(req, res, next){
   const { status } = res.locals.reservation;
   if (status === 'finished'){
@@ -32,9 +33,9 @@ async function reservationExists(req, res, next) {
 function reservationRequirements(req, res, next){
   const { data: { reservation_id, first_name, last_name, mobile_number, reservation_date, reservation_time, people, status } = {} } = req.body;
   const time = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-  if (!first_name || first_name === '') {
+  if (!first_name || first_name.trim() === '') {
     next({ status: 400, message: "Must input a first name." });
-  } else if (!last_name || last_name === "") {
+  } else if (!last_name || last_name.trim() === "") {
     next({ status: 400, message: "Must input a last name." });
   } else if (!mobile_number || typeof(mobile_number) !== 'string') {
     next({ status: 400, message: "Must input a mobile number" });
@@ -104,7 +105,7 @@ async function status(request, response) {
   response.status(200).json({ data: reservation });
 }
 
- async function update(req, res) {
+async function update(req, res) {
   const { reservation_id } = req.params;
   const reservation = {
     ...req.body.data,

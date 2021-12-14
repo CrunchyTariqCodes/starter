@@ -29,7 +29,7 @@ export default function Reservation({ reservation, cancel }) {
             <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
             <td>
             {reservation.status === 'booked' ?
-                ( <a className="btn btn-primary" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a> ) : ( '' )}
+                ( <a className="btn btn-info" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a> ) : ( '' )}
             </td>
             <td>
             {reservation.status === 'booked' ?

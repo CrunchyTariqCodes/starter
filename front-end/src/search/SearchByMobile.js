@@ -48,7 +48,7 @@ export default function SearchByMobile() {
             />
           </div>
           <div className="col-6 form-group">
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-info" type="submit">
               Find
             </button>
           </div>

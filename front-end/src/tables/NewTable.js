@@ -61,7 +61,7 @@ export default function NewTable() {
                         />
                         <button
                             type="submit"
-                            className="btn btn-primary mt-4"
+                            className="btn btn-info mt-4"
                         >Submit</button>
                         <button
                             type="button"

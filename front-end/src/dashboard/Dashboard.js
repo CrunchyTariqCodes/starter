@@ -56,7 +56,7 @@ export default function Dashboard({ date }) {
           <button className='btn btn-secondary'>Previous</button>
         </Link>
         <Link to={`/dashboard?date=${today()}`}>
-          <button className='btn btn-primary ml-2'>Today</button>
+          <button className='btn btn-info ml-2'>Today</button>
         </Link>
         <Link to={`/dashboard?date=${next(date)}`}>
           <button className='btn btn-secondary ml-2'>Next</button>

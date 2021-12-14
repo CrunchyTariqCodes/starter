@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
-/**
- * A form for submitting a new reservation
- * @returns {JSX.Element}
- *  an updated reservations list
- */
+
 export default function NewReservation() {
-    // grab the users history
     const history = useHistory();
-    // handle errors from the backend
     const [error, setError] = useState(null);
-    // create an inital empty form data
     const initalFormData = {
         first_name: '',
         last_name: '',
@@ -22,9 +15,7 @@ export default function NewReservation() {
         reservation_time: '',
         people: '',
     };
-    // set the formData
     const [formData, setFormData] = useState({ ...initalFormData });
-    // on submit return the user to the dashboard and shows their reservations
     const submitHandler = async (event) => {
         event.preventDefault();
         const ac = new AbortController();

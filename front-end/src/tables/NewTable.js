@@ -1,37 +1,27 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { createTable } from "../utils/api";
 import ErrorAlert from '../layout/ErrorAlert';
 
-/**
- * A form for submitting a new table
- * @returns {JSX.Element}
- *  a updated tables list
- */
 export default function NewTable() {
-    // grab the users history
     const history = useHistory();
-    // handle errors from the backend
     const [error, setError] = useState(null);
-    // create an inital empty form data
     const initalFormData = {
         table_name: '',
         capacity: '',
     };
-    // set the formData
     const [formData, setFormData] = useState({ ...initalFormData });
-    // change handler for keeping the current text on screen
     const changeHandler = ({ target: { name, value } }) => {
         setFormData({
             ...formData,
             [name]: value,
         });
     }
-    // when canceled go back to the users previous page
+    
     const cancelHandler = () => {
         history.goBack();
     }
-    // on submit return the user to the dashboard and shows their reservations
+    
     const submitHandler = async (event) => {
         event.preventDefault();
         const ac = new AbortController();

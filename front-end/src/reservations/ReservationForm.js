@@ -1,21 +1,16 @@
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 
-/**
- * A basic form layout for a reservation
- * @returns {JSX.Element}
- *  a form prefilled with info or not
- */
+
 export default function ReservationForm({ formData, setFormData, error, submitHandler}) {
     const history = useHistory();
-    // change handler for keeping the current text on screen
     const changeHandler = ({ target: { name, value } }) => {
         setFormData({
             ...formData,
             [name]: value,
         });
     }
-    // when canceled go back to the users previous page
+    
     const cancelHandler = () => {
         history.goBack();
     }

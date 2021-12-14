@@ -1,14 +1,7 @@
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
-/**
- * @props {reservation, cancel}
- *  reservations obj, cancel function 
- * @returns {JSX.Element}
- *  a row with the reservation data
- */
 export default function Reservation({ reservation, cancel }) {
     const history = useHistory();
-    // change row color based upon status
     let color = '';
     if (reservation.status === 'finished') {
         color = 'table-danger';
@@ -16,10 +9,6 @@ export default function Reservation({ reservation, cancel }) {
         color = 'table-success';
     }
 
-    /**
-     * @returns {JSX}
-     *  an updated reservations list
-     */
     const handleCancel = async (event) => {
         const result = window.confirm('Do you want to cancel this reservation? This cannot be undone.');
         if (result) {

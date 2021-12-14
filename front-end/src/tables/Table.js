@@ -1,12 +1,5 @@
 import { useHistory } from 'react-router-dom';
 
-/**
- * 
- * @props {table, finish}
- *  a table obj, a finish function
- * @returns 
- *  a row with the table data
- */
  export default function Table({ table, finish }) {
     const history = useHistory();
     let color = '';
@@ -14,10 +7,6 @@ import { useHistory } from 'react-router-dom';
         color = 'table-danger';
     }
 
-    /**
-     * @returns {JSX.Element}
-     *  an update table and reservations list
-     */
     const handleFinish = async (event) => {
         const result = window.confirm(`Is this table ready to seat new guests? This cannot be undone`);
         if (result) {

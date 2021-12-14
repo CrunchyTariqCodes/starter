@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { listReservations, listTables, freeTable, changeReservationStatus } from "../utils/api";
+import { listReservations, listTables, freeTable, updateStatus } from "../utils/api";
 import { next, previous, today } from '../utils/date-time'
-/* Components */
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from '../reservations/ReservationList';
 import TableList from '../tables/TableList'
 
-/**
- * Defines the dashboard page.
- * @props {date}
- *  the date for which the user wants to view reservations.
- * @returns {JSX.Element}
- */
+
 export default function Dashboard({ date }) {
-  // all list states and error
+
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [error, setError] = useState(null);
-  // load the dashboard
+ 
   useEffect(() => {
     const ac = new AbortController();
     const getReservations = async () => {
@@ -34,7 +28,7 @@ export default function Dashboard({ date }) {
     }
     getReservations();
   }, [date])
-  // finish off a table via seat
+ 
   const finish = async (table) => {
     const ac = new AbortController();
     try {
@@ -43,11 +37,11 @@ export default function Dashboard({ date }) {
       setError(error);
     }
   }
-  // cancel a reservation via cancel button
+
   const cancel = async (reservation) => {
     const ac = new AbortController();
     try {
-      await changeReservationStatus(reservation.reservation_id, 'cancelled', ac.signal)
+      await updateStatus(reservation.reservation_id, 'cancelled', ac.signal)
     } catch (error) {
       setError(error);
     }

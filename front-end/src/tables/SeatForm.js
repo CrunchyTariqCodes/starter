@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
-import { useHistory } from "react-router";
-import { listTables, changeReservationStatus, seatReservation } from "../utils/api";
-import TablesDropDown from "./TablesDropDown";
+import { useParams, useHistory } from "react-router-dom"
+import { listTables, updateStatus, seatReservation } from "../utils/api";
 import ErrorAlert from '../layout/ErrorAlert';
 
 export default function SeatForm() {
     const history = useHistory();
+    
     const [tables, setTables] = useState([]);
     const [error, setError] = useState(null);
     const [tableId, setTableId] = useState('');
     const { reservation_id } = useParams();
-    
+   
     useEffect(() => {
         const ac = new AbortController();
         const getTables = async () => {
@@ -24,7 +23,7 @@ export default function SeatForm() {
         }
         getTables();
     }, [])
-    
+   
     const cancelHandler = () => {
         history.goBack();
     }
@@ -32,20 +31,18 @@ export default function SeatForm() {
     const handleChange = ({ target: { value } }) => {
         setTableId(value);
     }
-    
+
     const submitHandler = async (event) => {
         event.preventDefault();
         const ac = new AbortController();
         try {
             await seatReservation(tableId, reservation_id, ac.signal);
-            await changeReservationStatus(reservation_id, 'seated', ac.signal);
+            await updateStatus(reservation_id, 'seated', ac.signal);
             history.push(`/dashboard`);
         } catch (error) {
             setError(error);
         }
     }
-    
-    const list = tables.map((obj) => <TablesDropDown key={obj.table_id} table={obj} />);
 
     return (
         <>
@@ -54,15 +51,25 @@ export default function SeatForm() {
             </div>
             <ErrorAlert error={error} />
             <form onSubmit={submitHandler}>
+              <div className='tablesNew_formGroup'>
                 <select className="form-select" 
-                    aria-label="Default select example"
                     name='table_id'
                     required
                     onChange={handleChange}
                 >
-                    <option value=''>Select a table</option>
-                    {list}
+                    <option value=''>Select a Table</option>
+              {tables.map((table) => (
+                <option
+                  key={table.table_id}
+                  value={table.table_id}
+                  disabled={table.reservation_id ? true : false}
+                >
+                  {table.table_name} - {table.capacity}
+                </option>
+              ))}
                 </select>
+                </div>
+                <div className='tablesNew_formBtns'>
                 <button
                     type="submit"
                     className="btn btn-primary mr-2"
@@ -72,6 +79,7 @@ export default function SeatForm() {
                     className="btn btn-secondary mr-2"
                     onClick={cancelHandler}
                 >Cancel</button>
+                </div>
             </form>
             
         </>
